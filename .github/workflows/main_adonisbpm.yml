@@ -72,4 +72,4 @@ jobs:
           app-name: 'bpmadonis'
           slot-name: 'Production'
           package: ./build  # Asegúrate de usar la ruta al código ya compilado
-          custom-docker-run-options: '--expose=3000'
+          custom-docker-run-options: '--expose=8080'
