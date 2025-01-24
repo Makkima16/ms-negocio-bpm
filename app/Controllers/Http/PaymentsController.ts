@@ -10,10 +10,7 @@ export default class PaymentsController {
   public async handleWebhook({ request, response }: HttpContextContract) {
     const body = request.body()
 
-    // Verificar la firma
-    if (!this.verifySignature(body)) {
-      return response.status(400).send({ message: 'Firma inválida' })
-    }
+
 
     // Verificar si ya existe un registro con la misma referencia
     const existingPayment = await Payment.findBy('ref', body.x_ref_payco)
@@ -26,7 +23,7 @@ export default class PaymentsController {
       email: body.x_customer_email,
       name: body.x_customer_name,
       ref: body.x_ref_payco,
-      client_id: null, // Aquí puedes agregar la lógica para encontrar el cliente si lo necesitas
+      client_id: body.x_extra1, // Aquí puedes agregar la lógica para encontrar el cliente si lo necesitas
       amount: body.x_amount,
       product: body.x_description,
       state: body.x_response,

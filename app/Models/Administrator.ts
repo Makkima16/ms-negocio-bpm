@@ -16,6 +16,11 @@ export default class Administrator extends BaseModel {
   @column()
   public user_id: string
 
+  @column()
+  public tel: string
+
+  @column()
+  public cedula:string
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

@@ -27,6 +27,7 @@ import "./routes/examenes";
 import "./routes/registers";
 import "./routes/pagos"
 import "./routes/administrator";
+import "./routes/aprobados";
 
 
 

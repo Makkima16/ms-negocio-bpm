@@ -25,6 +25,11 @@ export default class Modulo extends BaseModel {
   @column()
   public imagen_url: string; // Nuevo campo para la imagen
 
+  @column()
+  public pdf_name: string; // Nombre del archivo PDF
+
+  @column()
+  public curso_tipo: string; // Nombre del archivo PDF
 
   @hasMany(() => Exam, {
     foreignKey: 'module_id'

@@ -9,7 +9,8 @@ export default class extends BaseSchema {
       table.string('name')
       table.string('email')
       table.string('user_id')
-
+      table.string('cedula')
+      table.string('tel')
 
 
       /**

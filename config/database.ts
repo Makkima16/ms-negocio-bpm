@@ -41,6 +41,8 @@ const databaseConfig: DatabaseConfig = {
         user: Env.get('MYSQL_USER'),
         password: Env.get('MYSQL_PASSWORD', ''),
         database: Env.get('MYSQL_DB_NAME'),
+        ssl: Env.get('MYSQL_SSL') === 'true' ? { ca: require('fs').readFileSync(Env.get('MYSQL_SSL_CERT')) } : undefined,
+
       },
       migrations: {
         naturalSort: true,

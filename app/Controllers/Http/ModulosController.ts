@@ -27,6 +27,8 @@ export default class ModulosController {
         theModulo.introduccion=body.introduccion;
         theModulo.conclusion=body.conclusion
         theModulo.imagen_url=body.imagen_url
+        theModulo.pdf_name=body.pdf_name
+        theModulo.curso_tipo=body.curso_tipo
 
         return theModulo.save();
     }
@@ -43,5 +45,20 @@ export default class ModulosController {
           .where('module_id', moduleId)
           .select('*');
         return response.json(exams);
-      }  
+      }
+      
+
+      public async listByCourseType({ request }: HttpContextContract) {
+        const cursoTipo = request.input('curso_tipo'); // Obtén el tipo de curso del request
+        const page = request.input('page', 1); // Opcional: para paginar
+        const perPage = request.input('per_page', 20); // Opcional: para paginar
+        
+        // Realiza la consulta filtrando por curso_tipo
+        const modulos = await Modulo.query()
+            .where('curso_tipo', cursoTipo)
+            .paginate(page, perPage);
+    
+        return modulos;
+    }
+    
 }
