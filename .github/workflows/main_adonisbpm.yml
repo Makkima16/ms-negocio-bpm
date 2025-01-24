@@ -69,6 +69,6 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'adonisbpm'
+          app-name: 'bpmadonis'
           slot-name: 'Production'
           package: .  # Asegúrate de que sea la carpeta que contiene tu app (por ejemplo, build, dist, etc)
