@@ -37,7 +37,9 @@ jobs:
         with:
           name: node-app
           path: release.zip
-
+      - name: Increase Node.js memory limit
+        run: |
+          export NODE_OPTIONS="--max-old-space-size=4096"
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -70,5 +72,5 @@ jobs:
         with:
           app-name: 'adonis'
           slot-name: 'Production'
-          package: .
+          package: ./build  # Asegúrate de usar la ruta al código ya compilado
           
