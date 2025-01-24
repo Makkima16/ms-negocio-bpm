@@ -19,4 +19,4 @@ sourceMapSupport.install({ handleUncaughtExceptions: false })
 new Ignitor(__dirname)
   .httpServer()
   .start()
-  require('dotenv').config();
+require('dotenv').config();

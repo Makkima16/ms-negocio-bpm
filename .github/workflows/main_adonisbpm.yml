@@ -34,7 +34,9 @@ jobs:
         with:
           name: node-app
           path: release.zip
-
+      - name: Increase Node.js memory limit
+        run: |
+          export NODE_OPTIONS="--max-old-space-size=4096"
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -57,9 +59,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_E2A38DE7E8FB4ED9A15F79575E1BA4F3 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_877A511EC7AD4E05B0BA77511D08E536 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_93D1A3CE526D48DCBBF873CD2FD9C709 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_81BD21FE35854F18A24B15F27EF278A2 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D6247B97FE294F4D849073010B3AE5DA }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_6C02F12F0B5F44E298B5B0C0C0196E96 }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
@@ -68,4 +70,4 @@ jobs:
           app-name: 'adonisbpm'
           slot-name: 'Production'
           package: .
-          custom-docker-run-options: '--expose=3000'
+          custom-docker-run-options: '--expose=3333'
