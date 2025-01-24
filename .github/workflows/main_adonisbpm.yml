@@ -73,4 +73,4 @@ jobs:
           slot-name: 'Production'
           package: .
           custom-docker-image: 'your-docker-image'
-          custom-docker-run-options: '--expose=8080'
+          custom-docker-run-options: '--expose=3333'
