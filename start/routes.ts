@@ -18,6 +18,7 @@
 |
 */
 
+import Route from '@ioc:Adonis/Core/Route'
 
 import "./routes/modulos";
 import "./routes/questions";
@@ -28,5 +29,7 @@ import "./routes/pagos"
 import "./routes/administrator";
 import "./routes/aprobados";
 
-
+Route.get('/', async () => {
+    return { hello: 'world' }
+  })
 
