@@ -68,4 +68,4 @@ jobs:
           app-name: 'adonisbpm'
           slot-name: 'Production'
           package: .
-          custom-docker-run-options: '--expose=3333'
+          custom-docker-run-options: '--expose=8080'
