@@ -71,4 +71,5 @@ jobs:
         with:
           app-name: 'bpmadonis'
           slot-name: 'Production'
-          package: .  # Asegúrate de que sea la carpeta que contiene tu app (por ejemplo, build, dist, etc)
+          package: ./build  # Asegúrate de usar la ruta al código ya compilado
+          custom-docker-run-options: '--expose=3000'
