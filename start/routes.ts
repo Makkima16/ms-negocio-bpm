@@ -18,7 +18,6 @@
 |
 */
 
-import Route from '@ioc:Adonis/Core/Route'
 
 import "./routes/modulos";
 import "./routes/questions";
