@@ -1,7 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Payment from 'App/Models/Payment'
-import Env from '@ioc:Adonis/Core/Env'  // Asegúrate de importar Env
-import crypto from 'crypto';
+
 
 export default class PaymentsController {
   /**
@@ -33,37 +32,7 @@ export default class PaymentsController {
     return response.status(201).send(payment)
   }
 
-// Función para verificar la firma
-private verifySignature(data: any): boolean {
-  const privateKey = Env.get('EPAYCO_PRIVATE_KEY'); // Obtén la clave privada desde el archivo .env
-  
-  // 1. Excluimos la firma (x_signature) del cálculo y obtenemos todos los parámetros relevantes
-  const { x_signature, ...params } = data;
 
-  // 2. Decodificamos los valores que pueden contener caracteres especiales (como x_description)
-  const decodedParams = Object.keys(params).reduce((acc, key) => {
-    acc[key] = decodeURIComponent(params[key]); // Decodifica los parámetros
-    return acc;
-  }, {} as any);
-
-  // 3. Ordenamos los parámetros alfabéticamente (en base a las claves)
-  const sortedData = Object.keys(decodedParams)
-  .sort() // Ordenamos alfabéticamente las claves
-  .map(key => `${key}=${decodedParams[key] || ''}`) // Usar cadena vacía si el valor es nulo o undefined
-  .join('&');
-
-  // 4. Generamos la firma utilizando la clave privada de ePayco y los parámetros ordenados
-  const generatedSignature = crypto
-    .createHmac('sha256', privateKey) // Usamos SHA256 para la firma
-    .update(sortedData) // Calculamos el hash con los datos ordenados
-    .digest('hex'); // Generamos el hash en formato hexadecimal
-
-  // 5. Comparar la firma generada con la firma recibida
-  console.log('Firma generada:', generatedSignature);  // Para depuración
-  console.log('Firma recibida:', x_signature);         // Para depuración
-
-  return generatedSignature === x_signature; // Comparamos las firmas
-}
   /**
    * Lista paginada de todos los pagos.
    */
