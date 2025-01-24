@@ -65,7 +65,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'adonisbpm'
+          app-name: 'adonis'
           slot-name: 'Production'
           package: ./build  # Asegúrate de usar la ruta al código ya compilado
           custom-docker-run-options: '--expose=8080'
