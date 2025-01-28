@@ -7,7 +7,7 @@ Route.group(() => {
     Route.delete("/modulos/:id","ModulosController.destroy");
     Route.get("/modulos/:module_id/exams", "ModulosController.getExamsByModule");
     Route.get("/modulos/:id","ModulosController.show");
-    Route.get('/modulos/type_course', 'ModulosController.listByCourseType');
+    Route.get('/modulos/tipo/:curso_tipo', 'ModulosController.listByCursoTipo');
 
     
 })

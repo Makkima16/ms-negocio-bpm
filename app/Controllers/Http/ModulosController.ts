@@ -47,18 +47,23 @@ export default class ModulosController {
         return response.json(exams);
       }
       
-
-      public async listByCourseType({ request }: HttpContextContract) {
-        const cursoTipo = request.input('curso_tipo'); // Obtén el tipo de curso del request
-        const page = request.input('page', 1); // Opcional: para paginar
-        const perPage = request.input('per_page', 20); // Opcional: para paginar
-        
-        // Realiza la consulta filtrando por curso_tipo
-        const modulos = await Modulo.query()
-            .where('curso_tipo', cursoTipo)
-            .paginate(page, perPage);
+        public async listByCursoTipo({ request }: HttpContextContract) {
+            const tipo = request.param('curso_tipo');
     
-        return modulos;
-    }
+            if (!tipo) {
+                return { message: 'Client ID is required' };
+            }
+    
+            // Buscar el registro de aprobación por client_id
+            const modulo = await (await Modulo.query().where('curso_tipo', tipo));
+    
+            if (modulo) {
+                return modulo;
+            } else {
+                return null
+            }
+        }
+      
+    
     
 }
