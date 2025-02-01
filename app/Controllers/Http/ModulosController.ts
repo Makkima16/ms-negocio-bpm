@@ -11,7 +11,7 @@ export default class ModulosController {
 }
     public async index({request}: HttpContextContract){
         const page =request.input('page', 1);
-        const perPage = request.input("per_page", 20)
+        const perPage = request.input("per_page", 50)
         let Modulos:Modulo[]=await Modulo.query().paginate(page, perPage)
         return Modulos;
     }
