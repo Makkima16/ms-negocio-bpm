@@ -9,12 +9,13 @@ export default class ExamsController {
     return theExam
   }
 
-  public async index({ request }: HttpContextContract) {
-    const page = request.input('page', 1)
-    const perPage = request.input('per_page', 20)
-    let Exams: Exam[] = await Exam.query().paginate(page, perPage)
-    return Exams
-  }
+public async index({ request }: HttpContextContract) {
+  const page = request.input('page', 1);
+  const perPage = request.input('per_page', 20);
+  let exams = await Exam.query().preload('modulo').paginate(page, perPage);
+  return exams;
+}
+
 
   public async show({ params }: HttpContextContract) {
     return Exam.findOrFail(params.id)
