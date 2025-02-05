@@ -11,11 +11,16 @@ export default class PaymentsController {
 
 
 
-    // Verificar si ya existe un registro con la misma referencia
-    const existingPayment = await Payment.findBy('ref', body.x_ref_payco)
-    if (existingPayment) {
-      return response.status(200).send({ message: 'Pago ya procesado' })
-    }
+  // Verificar si ya existe un registro con la misma referencia
+  const existingPayment = await Payment.findBy('ref', body.x_ref_payco)
+
+  if (existingPayment) {
+    // Actualizar el estado del pago
+    existingPayment.merge({ state: body.x_response })
+    await existingPayment.save()
+
+    return response.status(200).send({ message: 'Estado de pago actualizado' })
+  }
 
     // Crear el nuevo pago
     const payment = await Payment.create({

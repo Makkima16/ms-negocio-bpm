@@ -22,7 +22,7 @@ export default class ModulosController {
         const body = request.body();
         const theModulo: Modulo = await Modulo.findOrFail(params.id);
         theModulo.link = body.link;
-        theModulo.titulo=body.title;
+        theModulo.titulo=body.titulo;
         theModulo.informacion=body.informacion;
         theModulo.introduccion=body.introduccion;
         theModulo.conclusion=body.conclusion
