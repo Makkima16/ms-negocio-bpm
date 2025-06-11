@@ -1,0 +1,13 @@
+name: Run Alarm Check
+
+on:
+  schedule:
+    - cron: '0 8 * * *'  # todos los días a las 8AM UTC
+jobs:
+  check-alarms:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send request to Adonis app
+        run: |
+          curl -X GET "https://ms-negocio-bpm-production.up.railway.app/alarms/check" \
+            -H "x-api-key: ${{ secrets.CRON_API_KEY }}"

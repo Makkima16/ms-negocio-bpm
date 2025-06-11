@@ -12,7 +12,7 @@ export default class ExamsController {
   public async index({ request }: HttpContextContract) {
     const page = request.input('page', 1);
     const perPage = request.input('per_page', 50);
-    let exams = await Exam.query().select('id', 'title', 'information', 'module_id').paginate(page, perPage);
+    let exams = await Exam.query().select('id', 'titulo', 'informacion', 'module_id').paginate(page, perPage);
     return exams;
   }
 
