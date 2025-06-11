@@ -11,4 +11,6 @@ jobs:
     steps:
       - name: Send request to Adonis app
         run: |
-          curl -X GET "https://fc32-2800-484-8f79-47d0-819e-cf8-df4a-760c.ngrok-free.app/alarms/check?token=${{ secrets.ALARM_SECRET_TOKEN }}"
+          RESPONSE=$(curl -X GET "https://fc32-2800-484-8f79-47d0-819e-cf8-df4a-760c.ngrok-free.app/alarms/check?token=${{ secrets.ALARM_SECRET_TOKEN }}")
+          echo "Respuesta del servidor:"
+          echo "$RESPONSE"
