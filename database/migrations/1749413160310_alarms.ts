@@ -9,7 +9,7 @@ export default class extends BaseSchema {
       table.integer('client_id').unsigned().notNullable().references('id').inTable('clients')
       table.string('subject').notNullable()
       table.string('content').notNullable()
-      table.timestamp('date').notNullable()
+      table.dateTime('date').notNullable()
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */

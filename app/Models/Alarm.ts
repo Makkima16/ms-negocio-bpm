@@ -15,7 +15,7 @@ export default class Alarm extends BaseModel {
   @column()
   public content: string
 
-  @column()
+  @column.dateTime()
   public date: DateTime
 
   @belongsTo(() => Client,{

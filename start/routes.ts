@@ -28,6 +28,7 @@ import "./routes/registers";
 import "./routes/pagos"
 import "./routes/administrator";
 import "./routes/aprobados";
+import "./routes/alarm";
 
 Route.get('/', async () => {
     return { hello: 'world' }

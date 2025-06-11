@@ -7,10 +7,8 @@ export default class AlarmsController {
   public async store({ request }: HttpContextContract) {
     const body = request.body()
 
-    // Calcula la fecha 3 meses después de ahora
-    const scheduledDate = DateTime.now().plus({ months: 3 })
+    const scheduledDate = DateTime.now().plus({ days:4 });
 
-    // Asegúrate de guardar la fecha calculada, no la que venga del cliente
     const theAlarm = await Alarm.create({
       client_id: body.client_id,
       subject: body.subject,

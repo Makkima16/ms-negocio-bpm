@@ -2,12 +2,13 @@ name: Run Alarm Check
 
 on:
   schedule:
-    - cron: '0 8 * * *'  # todos los días a las 8AM UTC
+    - cron: '50 8 11 6 *'  # 11 de junio a las 8:50 UTC
+  workflow_dispatch:      # Permite ejecutarlo manualmente también
+
 jobs:
-  check-alarms:
+  run-check-near:
     runs-on: ubuntu-latest
     steps:
       - name: Send request to Adonis app
         run: |
-          curl -X GET "https://ms-negocio-bpm-production.up.railway.app/alarms/check" \
-            -H "x-api-key: ${{ secrets.CRON_API_KEY }}"
+          curl -X GET "https://fc32-2800-484-8f79-47d0-819e-cf8-df4a-760c.ngrok-free.app/alarms/check?token=${{ secrets.ALARM_SECRET_TOKEN }}"
