@@ -2,7 +2,7 @@ name: Run Alarm Check
 
 on:
   schedule:
-    - cron: '50 8 11 6 *'  # 11 de junio a las 8:50 UTC
+    - cron: '55 8 11 6 *'  # 11 de junio a las 8:50 UTC
   workflow_dispatch:      # Permite ejecutarlo manualmente también
 
 jobs:
