@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, BelongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, belongsTo, BelongsTo, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import Client from './Client'
+import Patient from './Patient'
 
 export default class Alarm extends BaseModel {
   @column({ isPrimary: true })
@@ -18,10 +19,18 @@ export default class Alarm extends BaseModel {
   @column.dateTime()
   public date: DateTime
 
+  @column()
+  public servidor: string
+
   @belongsTo(() => Client,{
     foreignKey: 'client_id',
   })
   public cliente: BelongsTo<typeof Client>
+
+  @hasMany(() => Patient, {
+      foreignKey: 'alarma_id'
+    })
+    public patient: HasMany<typeof Patient>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

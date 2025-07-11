@@ -29,6 +29,8 @@ import "./routes/pagos"
 import "./routes/administrator";
 import "./routes/aprobados";
 import "./routes/alarm";
+import "./routes/patient";
+import "./routes/dashboard"
 
 Route.get('/', async () => {
     return { hello: 'world' }

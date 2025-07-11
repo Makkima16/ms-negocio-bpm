@@ -60,16 +60,24 @@ export default class PaymentsController {
    */
   public async store({ request }: HttpContextContract) {
     const body = request.body()
-    console.log('Datos recibidos:', body)
 
-    // Verificar si ya existe un pago con la misma referencia
+    // Evitar duplicados por referencia
     const existingPayment = await Payment.findBy('ref', body.ref)
     if (existingPayment) {
       return null
     }
 
-    // Crear el nuevo pago
-    const newPayment = await Payment.create(body)
+    // Crear el pago con estado forzado a "pending"
+    const newPayment = await Payment.create({
+      email: body.email,
+      name: body.name,
+      ref: body.ref,
+      client_id: body.client_id,
+      amount: body.amount,
+      product: body.product,
+      state: 'Pendiente', // siempre pendiente al inicio
+    })
+
     return newPayment
   }
 
@@ -86,4 +94,9 @@ export default class PaymentsController {
 
     return payment
   }
+    public async destroy({params, response}: HttpContextContract){
+        const thePayment: Payment = await Payment.findOrFail(params.id);
+        response.status(204);
+        return thePayment.delete()
+    }
 }

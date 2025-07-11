@@ -1,23 +1,28 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Alarm from 'App/Models/Alarm';
 import { DateTime } from 'luxon';
+import axios from 'axios'
 import Env from '@ioc:Adonis/Core/Env'
 
 export default class AlarmsController {
-  public async store({ request }: HttpContextContract) {
-    const body = request.body()
+public async store({ request }: HttpContextContract) {
+  const body = request.body()
 
-    const scheduledDate = DateTime.now().plus({ days:4 });
+  // Si envía fecha, usarla. Si no, usar fecha dentro de 3 meses.
+  const scheduledDate = body.date
+    ? DateTime.fromISO(body.date)
+    : DateTime.now().plus({ months: 3 })
 
-    const theAlarm = await Alarm.create({
-      client_id: body.client_id,
-      subject: body.subject,
-      content: body.content,
-      date: scheduledDate,
-    })
+  const theAlarm = await Alarm.create({
+    client_id: body.client_id,
+    subject: body.subject,
+    content: body.content,
+    date: scheduledDate,
+    servidor:body.servidor,
+  })
 
-    return theAlarm
-  }
+  return theAlarm
+}
 
     public async index({request}: HttpContextContract){
         const page =request.input('page', 1);
@@ -34,30 +39,65 @@ export default class AlarmsController {
         response.status(204);
         return theAlarm.delete()
     }
-    public async checkNearAlarms({ request,response }: HttpContextContract) {
-    const token = request.input('token')
-    if (token !== Env.get('ALARM_SECRET_TOKEN')) {
-      return response.unauthorized('Unauthorized')
+public async checkNearAlarms({ request, response }: HttpContextContract) {
+  const token = request.input('token')
+  if (token !== Env.get('ALARM_SECRET_TOKEN')) {
+    return response.unauthorized('Unauthorized')
   }
-    const today = DateTime.now().startOf('day')
-    const fiveDaysLater = today.plus({ days: 5 }).endOf('day')
 
-    // Buscar todas las alarmas cuya fecha esté entre hoy y 5 días más
-    const nearAlarms = await Alarm.query()
-      .where('date', '>=', today.toISO())
-      .andWhere('date', '<=', fiveDaysLater.toISO())
-      .preload('cliente')
+  const today = DateTime.now().startOf('day')
+  const fiveDaysLater = today.plus({ days: 5 }).endOf('day')
 
-    // Aquí podrías invocar tu microservicio de envío de correo por cada alarma
-    // Ejemplo ficticio:
-    // for (const alarm of nearAlarms) {
-    //   await sendEmail(alarm)
-    // }
+  const nearAlarms = await Alarm.query()
+    .where('date', '>=', today.toISO())
+    .andWhere('date', '<=', fiveDaysLater.toISO())
+    .preload('cliente')
 
-    // Por ahora devolvemos las alarmas encontradas
-    return response.ok({
-      total: nearAlarms.length,
-      data: nearAlarms,
-    })
+  const correosEnviados: {
+    alarm_id: number
+    email: string
+    status: 'enviado' | 'error'
+    result?: any
+    error?: any
+  }[] = []
+  for (const alarm of nearAlarms) {
+    const email = alarm.cliente?.email
+
+    if (!email) {
+      console.warn(`No se encontró el email para el cliente ID ${alarm.client_id}`)
+      continue
+    }
+
+    try {
+      const responseCorreo = await axios.post(`${Env.get('MS_CORREOS')}/enviar-recordatorio`, {
+        email,
+        subject: alarm.subject,
+        content: alarm.content,
+        date: alarm.date,
+      })
+
+      correosEnviados.push({
+        alarm_id: alarm.id,
+        email,
+        status: 'enviado',
+        result: responseCorreo.data,
+      })
+    } catch (error) {
+      correosEnviados.push({
+        alarm_id: alarm.id,
+        email,
+        status: 'error',
+        error: error.response?.data || error.message,
+      })
+    }
   }
+
+  return response.ok({
+    total: nearAlarms.length,
+    enviados: correosEnviados.length,
+    resultados: correosEnviados,
+  })
+}
+
+
 }

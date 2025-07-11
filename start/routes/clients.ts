@@ -9,5 +9,6 @@ Route.group(() => {
     Route.get('/buscar_UserID', 'ClientsController.buscar_UserID');
     Route.get('/buscar_Email', 'ClientsController.buscar_Email');
     Route.get('/clients/:id/payments/accepted', 'ClientsController.hasAcceptedPayments')
+    Route.get('/clients/:id/payments/exist', 'ClientsController.hasExistPayments')
 
 })

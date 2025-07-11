@@ -35,6 +35,24 @@ export default class ClientsController {
     const acceptedPayments = await client
       .related('payment') // Accede a los pagos relacionados con el cliente
       .query() // Realiza la consulta
+      .whereIn('state', ['Aceptada']) // Filtra los pagos cuyo estado es "Aceptada" o "Pendiente"
+
+    // Si encontró pagos aceptados, devuelve `true`, de lo contrario `false`
+    const hasAccepted = acceptedPayments.length > 0
+    return response.status(200).json({ hasAccepted })
+  }
+  
+  public async hasExistPayments({ params, response }: HttpContextContract) {
+    const client = await Client.find(params.id) // Buscar cliente por ID
+
+    if (!client) {
+      return response.status(404).json({ message: 'Cliente no encontrado' }) // Si no se encuentra el cliente
+    }
+
+    // Buscar pagos aceptados para este cliente
+    const acceptedPayments = await client
+      .related('payment') // Accede a los pagos relacionados con el cliente
+      .query() // Realiza la consulta
       .whereIn('state', ['Aceptada', 'Pendiente']) // Filtra los pagos cuyo estado es "Aceptada" o "Pendiente"
 
     // Si encontró pagos aceptados, devuelve `true`, de lo contrario `false`
@@ -42,6 +60,7 @@ export default class ClientsController {
     return response.status(200).json({ hasAccepted })
   }
   
+
     public async buscar_UserID({ request, response }: HttpContextContract) {
         const userId = request.qs().user_id
         let client
@@ -55,4 +74,6 @@ export default class ClientsController {
     client = await Client.query().where('email', email).first()
     return response.json(client)
     }
+
+    
     }

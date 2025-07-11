@@ -3,6 +3,7 @@ import { BaseModel, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import Register from './Register'
 import Payment from './Payment'
 import Aprobado from './Aprobado'
+import Alarm from './Alarm'
 
 export default class Client extends BaseModel {
   @column({ isPrimary: true })
@@ -42,6 +43,11 @@ export default class Client extends BaseModel {
     foreignKey: 'client_id'
   })
   public payment: HasMany<typeof Payment>
+
+  @hasMany(() => Alarm, {
+    foreignKey: 'client_id'
+  })
+  public alarm: HasMany<typeof Alarm>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

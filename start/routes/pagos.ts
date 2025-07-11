@@ -6,5 +6,5 @@ Route.group(() => {
     Route.get("/payments/:id", "PaymentsController.show")
     Route.put("/payments/:id", "PaymentsController.update")
     Route.post('/api/webhook/epayco', 'PaymentsController.handleWebhook')
-
+    Route.delete("/payments/:id","PaymentsController.destroy");
 })
