@@ -41,6 +41,8 @@ const databaseConfig: DatabaseConfig = {
         user: Env.get('MYSQL_USER'),
         password: Env.get('MYSQL_PASSWORD', ''),
         database: Env.get('MYSQL_DB_NAME'),
+        charset: 'utf8mb4',
+
 
       },
       migrations: {
