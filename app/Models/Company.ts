@@ -18,7 +18,7 @@ export default class Company extends BaseModel {
   public email: string
 
   @column()
-  public collabs: number
+  public collab: number
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
