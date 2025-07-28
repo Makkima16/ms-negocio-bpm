@@ -12,7 +12,7 @@ export default class Company extends BaseModel {
   public business: string
 
   @column()
-  public tel: number
+  public tel: string
 
   @column()
   public email: string
