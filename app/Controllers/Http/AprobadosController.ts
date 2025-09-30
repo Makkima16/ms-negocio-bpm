@@ -5,49 +5,53 @@ import axios from 'axios';
 
 export default class AprobadosController {
     public async store({ request, response }: HttpContextContract) {
-        const body = request.body()
-
+        // Solo permitimos los campos que realmente existen en la tabla aprobados
+        const data = request.only(['client_id', 'correo', 'type'])
+        console.log(data.type)
         // Verificar duplicado
-        const existingAprobado = await Aprobado.findBy('client_id', body.client_id)
+        const existingAprobado = await Aprobado.findBy('client_id', data.client_id)
         if (existingAprobado) {
             return response.status(400).json({ message: 'Ya existe un aprobado para este cliente' })
         }
 
-        // Buscar cliente
-        const client = await Client.find(body.client_id)
+        // Verificar que el cliente exista
+        const client = await Client.find(data.client_id)
         if (!client) {
             return response.status(404).json({ message: 'Cliente no encontrado' })
         }
 
-        // Crear aprobado
-        const newAprobado = await Aprobado.create(body)
+        // Crear aprobado solo con los campos válidos
+        const newAprobado = await Aprobado.create(data)
+        console.log(newAprobado.type)
 
         // Preparar datos para correo
-        const { type } = body
 
         // Determinar endpoint
         let endpoint = ''
-        switch (type) {
+        switch (data.type) {
             case 'empaquetadores':
-            endpoint = '/send-email-empaquetadores'
+            endpoint = '/certificados/send-email-empaquetadores'
             break
             case 'carnicos':
-            endpoint = '/send-email-carnicos'
+            endpoint = '/certificados/send-email-carnicos'
             break
             case 'ambulante':
-            endpoint = '/send-email'
+            endpoint = '/certificados/send-email'
             break
             default:
             return response.status(400).json({ message: 'Tipo de curso no válido' })
         }
 
         // Llamar microservicio
-        try {
-            await axios.post(`${process.env.MS_CORREOS}${endpoint}`, {
-            email: client.email,
-            name: `${client.name} ${client.apellido}`,
-            cedula : client.cedula,
-            code: String(client.id), // <-- aquí va el ID como código
+            try {
+            const url = `${process.env.MS_CORREOS}${endpoint}`
+            console.log('➡️ Llamando a microservicio de correos en:', url)
+
+            await axios.post(url, {
+                email: client.email,
+                name: `${client.name} ${client.apellido}`,
+                cedula: client.cedula,
+                code: String(client.id), // <-- aquí va el ID como código
             })
 
             return newAprobado
