@@ -1,32 +1,31 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Aprobado from 'App/Models/Aprobado';
+import Client from 'App/Models/Client';
 import axios from 'axios';
 
 export default class AprobadosController {
     public async store({ request, response }: HttpContextContract) {
         const body = request.body()
 
-        // Verificar si ya existe un aprobado para este cliente
+        // Verificar duplicado
         const existingAprobado = await Aprobado.findBy('client_id', body.client_id)
         if (existingAprobado) {
-            return response
-            .status(400)
-            .json({ message: 'Ya existe un aprobado para este cliente' })
+            return response.status(400).json({ message: 'Ya existe un aprobado para este cliente' })
         }
 
-        // Crear aprobado en DB
+        // Buscar cliente
+        const client = await Client.find(body.client_id)
+        if (!client) {
+            return response.status(404).json({ message: 'Cliente no encontrado' })
+        }
+
+        // Crear aprobado
         const newAprobado = await Aprobado.create(body)
 
-        // Extraer info para enviar al microservicio de correos
-        const { email, name, cedula, type, client_id } = body
+        // Preparar datos para correo
+        const { type } = body
 
-        if (!email || !name || !cedula || !type || !client_id) {
-            return response
-            .status(400)
-            .json({ message: 'Faltan datos para enviar el correo' })
-        }
-
-        // Determinar endpoint del microservicio
+        // Determinar endpoint
         let endpoint = ''
         switch (type) {
             case 'empaquetadores':
@@ -39,28 +38,25 @@ export default class AprobadosController {
             endpoint = '/send-email'
             break
             default:
-            return response
-                .status(400)
-                .json({ message: 'Tipo de curso no válido' })
+            return response.status(400).json({ message: 'Tipo de curso no válido' })
         }
 
+        // Llamar microservicio
         try {
-            // Llamada al microservicio con el "code" como client_id
             await axios.post(`${process.env.MS_CORREOS}${endpoint}`, {
-            email,
-            name,
-            cedula,
-            code: client_id, 
+            email: client.email,
+            name: `${client.name} ${client.apellido}`,
+            cedula : client.cedula,
+            code: String(client.id), // <-- aquí va el ID como código
             })
 
             return newAprobado
         } catch (error) {
             console.error('Error llamando al microservicio de correos:', error.message)
-            return response
-            .status(500)
-            .json({ message: 'Error enviando el correo' })
+            return response.status(500).json({ message: 'Error enviando el correo' })
         }
-        }
+    }
+
 
 
         public async index({request}: HttpContextContract){

@@ -8,6 +8,7 @@ import Alarm from './Alarm'
 export default class Client extends BaseModel {
   @column({ isPrimary: true })
   public id: number
+
   @column()
   public name: string
 
@@ -16,9 +17,6 @@ export default class Client extends BaseModel {
 
   @column()
   public email: string
-  
-  @column()
-  public password: string
 
   @column()
   public user_id: string
@@ -27,26 +25,18 @@ export default class Client extends BaseModel {
   public tel: string
 
   @column()
-  public cedula:number
+  public cedula: string  // <-- Cambiado a string para que coincida con la tabla
 
-  @hasMany(() => Register, {
-    foreignKey: 'client_id'
-  })
+  @hasMany(() => Register, { foreignKey: 'client_id' })
   public cliente: HasMany<typeof Register>
 
-  @hasMany(() => Aprobado, {
-    foreignKey: 'client_id'
-  })
+  @hasMany(() => Aprobado, { foreignKey: 'client_id' })
   public cliente_aprobado: HasMany<typeof Aprobado>
   
-  @hasMany(() => Payment, {
-    foreignKey: 'client_id'
-  })
+  @hasMany(() => Payment, { foreignKey: 'client_id' })
   public payment: HasMany<typeof Payment>
 
-  @hasMany(() => Alarm, {
-    foreignKey: 'client_id'
-  })
+  @hasMany(() => Alarm, { foreignKey: 'client_id' })
   public alarm: HasMany<typeof Alarm>
 
   @column.dateTime({ autoCreate: true })
