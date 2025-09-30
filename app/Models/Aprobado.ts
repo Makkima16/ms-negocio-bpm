@@ -12,6 +12,9 @@ export default class Aprobado extends BaseModel {
   @column()
   public correo: boolean
 
+  @column()
+  public type: string
+
   @belongsTo(() => Client,{
     foreignKey: 'client_id',
   })

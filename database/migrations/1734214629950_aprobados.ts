@@ -8,7 +8,7 @@ export default class extends BaseSchema {
       table.increments('id')
       table.integer('client_id').unsigned().notNullable().references('id').inTable('clients')
       table.boolean('correo').defaultTo(false) 
-
+      table.string('type').notNullable()
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
