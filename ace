@@ -1,16 +1,18 @@
 /*
 |--------------------------------------------------------------------------
-| Ace Commands
+| Ace entrypoint
 |--------------------------------------------------------------------------
 |
-| This file is the entry point for running ace commands.
+| The "ace" file is executed by the CLI and
+|   - Imports the "reflect-metadata" polyfill
+|   - Sets up the source map support so that we can display correct results
+|   - Boots the application and runs the command
 |
 */
 
 require('reflect-metadata')
 require('source-map-support').install({ handleUncaughtExceptions: false })
 
-const { Ignitor } = require('@adonisjs/core/build/standalone')
-new Ignitor(__dirname)
-  .ace()
-  .handle(process.argv.slice(2))
+new (require('@adonisjs/core/build/standalone').Ignitor)(
+  __dirname
+).ace()

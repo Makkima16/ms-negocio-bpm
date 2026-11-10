@@ -4,14 +4,12 @@ import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 export default class Administrator extends BaseModel {
   @column({ isPrimary: true })
   public id: number
+
   @column()
   public name: string
 
   @column()
   public email: string
-
-  @column()
-  public password: string
 
   @column()
   public user_id: string
@@ -20,7 +18,7 @@ export default class Administrator extends BaseModel {
   public tel: string
 
   @column()
-  public cedula:string
+  public cedula: string
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

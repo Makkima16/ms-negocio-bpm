@@ -1,25 +1,42 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Administrator from 'App/Models/Administrator';
+import Administrator from 'App/Models/Administrator'
+
+const FIELDS = ['name', 'email', 'user_id', 'tel', 'cedula'] as const
 
 export default class AdministratorsController {
-    public async store({request}:HttpContextContract){
-        let body = request.body();
-        const theAdministrator=await Administrator.create(body)
-        return theAdministrator;
+  public async store({ request, response }: HttpContextContract) {
+    const body = request.only([...FIELDS])
+    if (!body.name || !body.email || !body.user_id) {
+      return response.badRequest({ message: 'name, email y user_id son obligatorios' })
     }
-    public async index({request}: HttpContextContract){
-        const page =request.input('page', 1);
-        const perPage = request.input("per_page", 20)
-        let Administrators:Administrator[]=await Administrator.query().paginate(page, perPage)
-        return Administrators;
+    const existing = await Administrator.findBy('email', body.email)
+    if (existing) {
+      return response.conflict({ message: 'Ya existe un administrador con ese correo' })
     }
-    public async show({params}:HttpContextContract){
-        return Administrator.findOrFail(params.id)
-    }
+    const administrator = await Administrator.create(body)
+    return response.created(administrator)
+  }
 
-    public async destroy({params, response}: HttpContextContract){
-        const theAdministrator: Administrator = await Administrator.findOrFail(params.id);
-        response.status(204);
-        return theAdministrator.delete()
+  public async index({ request }: HttpContextContract) {
+    const page = request.input('page', 1)
+    const perPage = Math.min(Number(request.input('per_page', 20)), 100)
+    return Administrator.query().paginate(page, perPage)
+  }
+
+  public async show({ params, response }: HttpContextContract) {
+    const administrator = await Administrator.find(params.id)
+    if (!administrator) {
+      return response.notFound({ message: 'Administrador no encontrado' })
     }
+    return administrator
+  }
+
+  public async destroy({ params, response }: HttpContextContract) {
+    const administrator = await Administrator.find(params.id)
+    if (!administrator) {
+      return response.notFound({ message: 'Administrador no encontrado' })
+    }
+    await administrator.delete()
+    return response.noContent()
+  }
 }

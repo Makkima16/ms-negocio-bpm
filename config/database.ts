@@ -1,49 +1,33 @@
 /**
  * Config source: https://git.io/JesV9
- *
- * Feel free to let us know via PR, if you find something broken in this config
- * file.
  */
 
 import Env from '@ioc:Adonis/Core/Env'
 import type { DatabaseConfig } from '@ioc:Adonis/Lucid/Database'
+import { existsSync, readFileSync } from 'fs'
+
+const sslEnabled = Env.get('MYSQL_SSL', 'false') === 'true'
+const sslCertPath = Env.get('MYSQL_SSL_CERT', '')
+
+const sslOptions =
+  sslEnabled && sslCertPath && existsSync(sslCertPath)
+    ? { ssl: { ca: readFileSync(sslCertPath, 'utf8') } }
+    : {}
 
 const databaseConfig: DatabaseConfig = {
-  /*
-  |--------------------------------------------------------------------------
-  | Connection
-  |--------------------------------------------------------------------------
-  |
-  | The primary connection for making database queries across the application
-  | You can use any key from the `connections` object defined in this same
-  | file.
-  |
-  */
-  connection: Env.get('DB_CONNECTION'),
+  connection: Env.get('DB_CONNECTION', 'mysql'),
 
   connections: {
-    /*
-    |--------------------------------------------------------------------------
-    | MySQL config
-    |--------------------------------------------------------------------------
-    |
-    | Configuration for MySQL database. Make sure to install the driver
-    | from npm when using this connection
-    |
-    | npm i mysql2
-    |
-    */
     mysql: {
       client: 'mysql2',
       connection: {
-        host: Env.get('MYSQL_HOST'),
-        port: Env.get('MYSQL_PORT'),
-        user: Env.get('MYSQL_USER'),
+        host: Env.get('MYSQL_HOST', '127.0.0.1'),
+        port: Number(Env.get('MYSQL_PORT', 3306)),
+        user: Env.get('MYSQL_USER', 'root'),
         password: Env.get('MYSQL_PASSWORD', ''),
-        database: Env.get('MYSQL_DB_NAME'),
+        database: Env.get('MYSQL_DB_NAME', 'modulos'),
         charset: 'utf8mb4',
-
-
+        ...sslOptions,
       },
       migrations: {
         naturalSort: true,
@@ -51,8 +35,7 @@ const databaseConfig: DatabaseConfig = {
       healthCheck: false,
       debug: false,
     },
-
-  }
+  },
 }
 
 export default databaseConfig
